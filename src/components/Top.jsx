@@ -1,13 +1,14 @@
 const Top = () => {
   return (
-    <div className="flex gap-3 justify-end p-3 border-b border-gray-400">
+    <div className="flex gap-3 justify-end items-center p-3 border-b border-gray-400">
       <img
-        src="https://images.fineartamerica.com/images/artworkimages/mediumlarge/2/cat-face-by-jonathan-fife.jpg"
-        className="w-12 h-12 object-cover rounded-full"
+        src={null}
+        className="w-11 h-11 object-cover rounded-full"
+        alt="Admin"
       />
       <div>
-        <h2 className="text-gray-900 font-semibold">Admin</h2>
-        <p className="text-gray-600">admin@gmail.com</p>
+        <h2 className="text-gray-800 font-semibold">Admin</h2>
+        <p className="text-gray-700">admin@gmail.com</p>
       </div>
     </div>
   );
