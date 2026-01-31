@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useProduct } from "../ProductContext";
 import { MoreVertical } from "lucide-react";
 import { useCategory } from "../CategoryContext";
@@ -8,21 +8,22 @@ const Product = () => {
   const { categories } = useCategory();
   const [id, setId] = useState(null);
   const [mode, setMode] = useState("add");
-  const [form, setForm] = useState({
+  const emptyForm = {
     name: "",
     category: "",
     stock: "",
-    sizes: {
-      s: false,
-      m: false,
-      l: false,
-    },
-    orderType: {
-      dine_in: false,
-      takeaway: false,
-    },
-  });
+    sizes: { s: false, m: false, l: false },
+    prices: { s: "", m: "", l: "" },
+    orderType: { dine_in: false, takeaway: false },
+    image: null,
+  };
+
+  const [form, setForm] = useState(emptyForm);
   const [showForm, setShowForm] = useState(false);
+
+  useEffect(() => {
+    console.log(form);
+  }, [form]);
 
   return (
     <div>
@@ -42,9 +43,7 @@ const Product = () => {
       <table className="w-full">
         <thead>
           <tr className="text-left bg-gray-300">
-            <th className="p-3" src={null}>
-              Image
-            </th>
+            <th className="p-3">Image</th>
             <th className="p-3">Name</th>
             <th className="p-3">Category</th>
             <th className="p-3">Stock</th>
@@ -57,17 +56,25 @@ const Product = () => {
         <tbody>
           {products.map((product) => (
             <tr key={product.id} className="border-b border-gray-400">
-              <td className="p-3">{product.image}</td>
+              <td className="p-3">
+                {product.image && (
+                  <img
+                    src={URL.createObjectURL(product.image)}
+                    alt={product.name}
+                    className="w-11 h-11 object-cover"
+                  />
+                )}
+              </td>
               <td className="p-3">{product.name}</td>
               <td className="p-3">{product.category}</td>
               <td className="p-3">{product.stock}</td>
-              <td className="p-3 flex gap-2">
+              <td className="p-3">
                 {Object.keys(product.sizes)
                   .filter((x) => product.sizes[x])
                   .map((size) => (
-                    <p className="bg-amber-200 w-6 h-6 text-center rounded-full">
+                    <span className="bg-amber-200 w-6 h-6 text-center rounded-full inline-block mr-2">
                       {size.toUpperCase()}
-                    </p>
+                    </span>
                   ))}
               </td>
               <td className="p-3">
@@ -163,6 +170,10 @@ const Product = () => {
                       setForm({
                         ...form,
                         sizes: { ...form.sizes, s: e.target.checked },
+                        prices: {
+                          ...form.prices,
+                          s: e.target.checked ? form.prices.s : "",
+                        },
                       })
                     }
                   />
@@ -177,6 +188,10 @@ const Product = () => {
                       setForm({
                         ...form,
                         sizes: { ...form.sizes, m: e.target.checked },
+                        prices: {
+                          ...form.prices,
+                          m: e.target.checked ? form.prices.m : "",
+                        },
                       })
                     }
                   />
@@ -191,12 +206,61 @@ const Product = () => {
                       setForm({
                         ...form,
                         sizes: { ...form.sizes, l: e.target.checked },
+                        prices: {
+                          ...form.prices,
+                          l: e.target.checked ? form.prices.l : "",
+                        },
                       })
                     }
                   />
                   L
                 </label>
               </div>
+
+              {form.sizes.s && (
+                <input
+                  type="number"
+                  placeholder="Price for S"
+                  className="border px-2 py-1 mt-2"
+                  value={form.prices.s}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      prices: { ...form.prices, s: e.target.value },
+                    })
+                  }
+                />
+              )}
+
+              {form.sizes.m && (
+                <input
+                  type="number"
+                  placeholder="Price for M"
+                  className="border px-2 py-1 mt-2"
+                  value={form.prices.m}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      prices: { ...form.prices, m: e.target.value },
+                    })
+                  }
+                />
+              )}
+
+              {form.sizes.l && (
+                <input
+                  type="number"
+                  placeholder="Price for L"
+                  className="border px-2 py-1 mt-2"
+                  value={form.prices.l}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      prices: { ...form.prices, l: e.target.value },
+                    })
+                  }
+                />
+              )}
             </div>
 
             <div className="mb-4">
@@ -238,7 +302,29 @@ const Product = () => {
               </div>
             </div>
 
-            <div className="flex justify-end gap-2">
+            <label>
+              <p className="font-medium mb-2">Image</p>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+
+                  setForm({ ...form, image: file });
+                }}
+              />
+            </label>
+
+            {form.image && (
+              <img
+                src={URL.createObjectURL(form.image)}
+                alt="preview"
+                className="w-20 h-20 object-cover mt-2"
+              />
+            )}
+
+            <div className="flex justify-end gap-2 mt-2">
               <button
                 className="px-3 py-1 rounded border"
                 onClick={() => setShowForm(false)}
@@ -250,6 +336,7 @@ const Product = () => {
                 className="px-3 py-1 rounded bg-gray-800 text-white"
                 onClick={() => {
                   mode === "add" ? addProduct(form) : editProduct(id, form);
+                  setForm(emptyForm);
                   setShowForm(false);
                 }}
               >
