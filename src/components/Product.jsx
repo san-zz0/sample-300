@@ -21,10 +21,6 @@ const Product = () => {
   const [form, setForm] = useState(emptyForm);
   const [showForm, setShowForm] = useState(false);
 
-  useEffect(() => {
-    console.log(form);
-  }, [form]);
-
   return (
     <div>
       <div className="flex justify-between items-center mb-4">

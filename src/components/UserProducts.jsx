@@ -7,8 +7,8 @@ import { ShoppingCart } from "lucide-react";
 const UserProducts = () => {
   const { products } = useProduct();
   const { cart, addToCart } = useCart();
-
   const [selectedSizes, setSelectedSizes] = useState({});
+  const [selectedOptions, setSelectedOptions] = useState({});
 
   const toggleSize = (productId, size) => {
     setSelectedSizes((prev) => ({
@@ -17,6 +17,13 @@ const UserProducts = () => {
         ...prev[productId],
         [size]: !prev?.[productId]?.[size],
       },
+    }));
+  };
+
+  const setOrderType = (productId, orderType) => {
+    setSelectedOptions((prev) => ({
+      ...prev,
+      [productId]: orderType,
     }));
   };
 
@@ -35,17 +42,28 @@ const UserProducts = () => {
     Object.keys(sizes)
       .filter((size) => sizes[size])
       .forEach((size) => {
+        const orderType =
+          selectedOptions[product.id] ||
+          (product.orderType?.dine_in ? "dine_in" : "takeaway");
+
         addToCart({
           id: product.id,
           name: product.name,
           size,
           price: product.prices[size],
+          // order
+          image: product.image,
+          orderType,
         });
       });
 
     setSelectedSizes((prev) => ({
       ...prev,
       [product.id]: {},
+    }));
+    setSelectedOptions((prev) => ({
+      ...prev,
+      [product.id]: "",
     }));
   };
 
@@ -82,10 +100,8 @@ const UserProducts = () => {
                   className="w-full h-40 object-cover"
                 />
               )}
-
               <h3 className="font-semibold text-lg">{product.name}</h3>
               <p className="text-sm text-gray-600">{product.category}</p>
-
               <div className="flex flex-wrap gap-2">
                 {Object.keys(product.sizes)
                   .filter((size) => product.sizes[size])
@@ -105,6 +121,39 @@ const UserProducts = () => {
                     );
                   })}
               </div>
+
+              {Object.values(product.orderType).every(Boolean) ? (
+                <div>
+                  <label className="mr-3">
+                    Dine in
+                    <input
+                      type="radio"
+                      name={`orderType-${product.id}`}
+                      checked={selectedOptions[product.id] === "dine_in"}
+                      className="ml-1"
+                      onChange={() => setOrderType(product.id, "dine_in")}
+                    />
+                  </label>
+                  <label>
+                    Takeaway
+                    <input
+                      type="radio"
+                      name={`orderType-${product.id}`}
+                      className="ml-1"
+                      checked={selectedOptions[product.id] === "takeaway"}
+                      onChange={() => setOrderType(product.id, "takeaway")}
+                    />
+                  </label>
+                </div>
+              ) : (
+                <div>
+                  {product.orderType?.dine_in ? (
+                    <p>Dine in</p>
+                  ) : (
+                    <p>Takeaway</p>
+                  )}
+                </div>
+              )}
 
               <button
                 onClick={() => handleAddToCart(product)}

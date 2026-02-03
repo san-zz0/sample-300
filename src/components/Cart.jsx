@@ -1,8 +1,9 @@
 import { X } from "lucide-react";
 import { useCart } from "../CartContext";
+import { useEffect } from "react";
 
 const Cart = ({ isOpen, closeCart }) => {
-  const { cart, updateQty, deleteSize } = useCart();
+  const { cart, updateQty, deleteSize, setOrders } = useCart();
 
   const total = cart.reduce(
     (sum, product) =>
@@ -84,9 +85,20 @@ const Cart = ({ isOpen, closeCart }) => {
         </div>
 
         {cart.length > 0 && (
-          <div className="p-4 border-t border-gray-400 flex justify-between font-semibold text-lg">
-            <span>Total</span>
-            <span>₹{total}</span>
+          <div>
+            <div className="p-4 border-t border-gray-400 flex justify-between font-semibold text-lg">
+              <span>Total</span>
+              <span>₹{total}</span>
+            </div>
+
+            <div className="px-4">
+              <button
+                onClick={() => setOrders(cart)}
+                className="w-full text-white py-2 mt-1 rounded bg-yellow-500"
+              >
+                Place Order
+              </button>
+            </div>
           </div>
         )}
       </div>

@@ -6,12 +6,10 @@ export const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
 
   const addProduct = (obj) => {
-    console.log(obj);
     setProducts([...products, { id: crypto.randomUUID(), ...obj }]);
   };
 
   const deleteProduct = (id) => {
-    console.log(id);
     setProducts(products.filter((product) => product.id !== id));
   };
 

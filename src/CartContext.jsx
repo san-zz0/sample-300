@@ -4,8 +4,9 @@ const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
+  const [orders, setOrders] = useState([]);
 
-  const addToCart = ({ id, name, size, price }) => {
+  const addToCart = ({ id, name, size, price, image, orderType }) => {
     setCart((prev) => {
       const productExists = prev.find((p) => p.id === id);
 
@@ -18,6 +19,8 @@ export const CartProvider = ({ children }) => {
             sizes: {
               [size]: { qty: 1, price },
             },
+            image,
+            orderType,
           },
         ];
       }
@@ -84,8 +87,38 @@ export const CartProvider = ({ children }) => {
     );
   };
 
+  const deleteSizeFromOrders = (id, size) => {
+    setOrders((prev) =>
+      prev
+        .map((product) => {
+          if (product.id !== id) return product;
+
+          const newSizes = { ...product.sizes };
+
+          delete newSizes[size];
+
+          if (Object.keys(newSizes).length === 0) {
+            return null; // null and filter it out from the cart product
+          }
+
+          return { ...product, sizes: newSizes };
+        })
+        .filter(Boolean),
+    );
+  };
+
   return (
-    <CartContext.Provider value={{ cart, addToCart, updateQty, deleteSize }}>
+    <CartContext.Provider
+      value={{
+        cart,
+        addToCart,
+        updateQty,
+        deleteSize,
+        orders,
+        setOrders,
+        deleteSizeFromOrders,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
