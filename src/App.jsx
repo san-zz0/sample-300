@@ -6,6 +6,7 @@ import Product from "./components/Product";
 import Category from "./components/Category";
 import Order from "./components/Order";
 import UserProducts from "./components/UserProducts";
+import Login from "./components/Login";
 import { CartProvider } from "./CartContext";
 
 const App = () => {
@@ -14,6 +15,7 @@ const App = () => {
       <ProductProvider>
         <CartProvider>
           <Routes>
+            <Route path="/login" element={<Login />} />
             <Route path="/user-products" element={<UserProducts />} />
 
             <Route path="/admin" element={<Layout />}>
