@@ -1,9 +1,11 @@
-import { X } from "lucide-react";
+import { StopCircle, X } from "lucide-react";
 import { useCart } from "../CartContext";
 import { useEffect } from "react";
+import { useProduct } from "../ProductContext";
 
 const Cart = ({ isOpen, closeCart }) => {
-  const { cart, updateQty, deleteSize, setOrders } = useCart();
+  const { cart, updateQty, deleteSize, setOrders, setCart } = useCart();
+  const { products, setProducts } = useProduct();
 
   const total = cart.reduce(
     (sum, product) =>
@@ -93,7 +95,42 @@ const Cart = ({ isOpen, closeCart }) => {
 
             <div className="px-4">
               <button
-                onClick={() => setOrders(cart)}
+                onClick={() => {
+                  setProducts(
+                    products.map((product) => {
+                      const cartItem = cart.find((c) => c.id === product.id);
+
+                      if (!cartItem) return product;
+
+                      const newStock =
+                        product.stock -
+                        Object.values(cartItem.sizes).reduce(
+                          (total, size) => total + (size?.qty || 0),
+                          0,
+                        );
+
+                      if (newStock < 0) {
+                        console.log(
+                          `Only ${product.stock} ${product.name} is available`,
+                        );
+                        return product;
+                      }
+
+                      setOrders((prev) => [
+                        ...prev,
+                        ...cart.map((c) => ({
+                          ...c,
+                          orderId: crypto.randomUUID(),
+                        })),
+                      ]);
+
+                      return {
+                        ...product,
+                        stock: newStock,
+                      };
+                    }),
+                  );
+                }}
                 className="w-full text-white py-2 mt-1 rounded bg-yellow-500"
               >
                 Place Order

@@ -1,10 +1,18 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    console.log("cart =", cart);
+  }, [cart]);
+
+  useEffect(() => {
+    console.log("orders =", orders);
+  }, [orders]);
 
   const addToCart = ({ id, name, size, price, image, orderType }) => {
     setCart((prev) => {
@@ -91,7 +99,7 @@ export const CartProvider = ({ children }) => {
     setOrders((prev) =>
       prev
         .map((product) => {
-          if (product.id !== id) return product;
+          if (product.orderId !== id) return product;
 
           const newSizes = { ...product.sizes };
 
@@ -116,6 +124,7 @@ export const CartProvider = ({ children }) => {
         deleteSize,
         orders,
         setOrders,
+        setCart,
         deleteSizeFromOrders,
       }}
     >

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "../CartContext";
 
 const Order = () => {
@@ -37,7 +37,7 @@ const Order = () => {
 
         <tbody>
           {filteredOrders.map((order) => (
-            <tr key={order.id} className="border-b border-gray-400">
+            <tr key={order.orderId} className="border-b border-gray-400">
               <td className="p-3">
                 {order.image && (
                   <img
@@ -73,7 +73,7 @@ const Order = () => {
                 {Object.entries(order.sizes).map(([size, data]) => (
                   <button
                     key={size}
-                    onClick={() => deleteSizeFromOrders(order.id, size)}
+                    onClick={() => deleteSizeFromOrders(order.orderId, size)}
                     className="text-red-600 block"
                   >
                     Remove

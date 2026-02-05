@@ -1,9 +1,13 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const ProductContext = createContext();
 
 export const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    console.log("products =", products);
+  }, [products]);
 
   const addProduct = (obj) => {
     setProducts([...products, { id: crypto.randomUUID(), ...obj }]);
@@ -23,7 +27,7 @@ export const ProductProvider = ({ children }) => {
 
   return (
     <ProductContext.Provider
-      value={{ products, addProduct, deleteProduct, editProduct }}
+      value={{ products, addProduct, deleteProduct, editProduct, setProducts }}
     >
       {children}
     </ProductContext.Provider>

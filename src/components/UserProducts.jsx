@@ -154,10 +154,17 @@ const UserProducts = () => {
                   )}
                 </div>
               )}
-
+              {product.stock <= 5 && product.stock !== 0 && (
+                <p className="text-sm text-amber-700">Stock is running out</p>
+              )}
+              {product.stock === 0 && (
+                <p className="text-sm text-amber-700">Out of stock</p>
+              )}
               <button
                 onClick={() => handleAddToCart(product)}
-                disabled={!Object.values(sizes).some(Boolean)}
+                disabled={
+                  !Object.values(sizes).some(Boolean) || product.stock === 0
+                }
                 // [true, false, false].some(Boolean)- true - not- false so not diasble
                 className="px-3 py-2 rounded bg-yellow-300  disabled:opacity-60"
               >
