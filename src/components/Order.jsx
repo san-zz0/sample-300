@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useCart } from "../CartContext";
 
 const Order = () => {
@@ -41,7 +41,7 @@ const Order = () => {
               <td className="p-3">
                 {order.image && (
                   <img
-                    src={URL.createObjectURL(order.image)}
+                    src={order.image}
                     alt={order.name}
                     className="w-11 h-11 object-cover"
                   />

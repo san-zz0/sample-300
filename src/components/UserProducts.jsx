@@ -95,7 +95,7 @@ const UserProducts = () => {
             >
               {product.image && (
                 <img
-                  src={URL.createObjectURL(product.image)}
+                  src={product.image}
                   alt={product.name}
                   className="w-full h-40 object-cover"
                 />

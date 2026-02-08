@@ -1,9 +1,16 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const CategoryContext = createContext();
 
 export const CategoryProvider = ({ children }) => {
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState(() => {
+    const storedCategory = localStorage.getItem("categories");
+    return storedCategory ? JSON.parse(storedCategory) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("categories", JSON.stringify(categories));
+  }, [categories]);
 
   const addCategory = (name) => {
     setCategories([

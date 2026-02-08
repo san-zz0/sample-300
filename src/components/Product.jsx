@@ -15,7 +15,7 @@ const Product = () => {
     sizes: { s: false, m: false, l: false },
     prices: { s: "", m: "", l: "" },
     orderType: { dine_in: false, takeaway: false },
-    image: null,
+    image: "",
   };
 
   const [form, setForm] = useState(emptyForm);
@@ -55,7 +55,7 @@ const Product = () => {
               <td className="p-3">
                 {product.image && (
                   <img
-                    src={URL.createObjectURL(product.image)}
+                    src={product.image}
                     alt={product.name}
                     className="w-11 h-11 object-cover"
                   />
@@ -307,14 +307,18 @@ const Product = () => {
                   const file = e.target.files?.[0];
                   if (!file) return;
 
-                  setForm({ ...form, image: file });
+                  const reader = new FileReader();
+                  reader.onload = (e) => {
+                    setForm({ ...form, image: e.target.result });
+                  };
+                  reader.readAsDataURL(file);
                 }}
               />
             </label>
 
             {form.image && (
               <img
-                src={URL.createObjectURL(form.image)}
+                src={form.image}
                 alt="preview"
                 className="w-20 h-20 object-cover mt-2"
               />
